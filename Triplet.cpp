@@ -58,6 +58,7 @@ int main()
         printf("(Using function to access the data) : %d.\n", ans);
     if(PutValue(tp, 3, 2001))
         printf("The 3rd element which has been edited is : %d.\n", tp[2]);
+    DestroyTriplet(tp);
 
     return 0;
 }
