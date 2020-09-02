@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-//函数所返回的错误代码
+// 函数所返回的错误代码
 #define TRUE        1
 #define FALSE       0
 #define OK          1
