@@ -74,7 +74,7 @@ Status IsDecending (const Triplet &T)
         return FALSE;
 }// IsDecending
 
-// 返回三元组中数值最大的元素
+// 获取三元组中数值最大的元素
 Status Max (const Triplet &T, int &ans)
 {
     if(T == NULL) return ERROR;
@@ -82,7 +82,7 @@ Status Max (const Triplet &T, int &ans)
     return OK;
 }// Max
 
-// 返回三元组中数值最小的元素
+// 获取三元组中数值最小的元素
 Status Min (const Triplet &T, int &ans)
 {
     if(T == NULL) return ERROR;
