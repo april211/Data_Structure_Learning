@@ -9,19 +9,19 @@
 #define INFEASIBLE -1
 #define OVERFLOW   -2
 
-typedef int *Triplet;   //指向整型的指针
-typedef int  Status;    //函数返回的状态值
+typedef int *Triplet;   // 指向整型的指针
+typedef int  Status;    // 函数返回的状态值
 
-//初始化三元组
+// 初始化三元组
 Status InitTriplet (Triplet &T, int v1, int v2, int v3)
 {
     T = (int*)malloc(3* sizeof(int));
-    if(!T) exit(OVERFLOW);              //如果存储空间分配失败，返回 OVERFLOW，中断进程
+    if(!T) exit(OVERFLOW);              // 如果存储空间分配失败，返回 OVERFLOW，中断进程
     T[0] = v1, T[1] = v2, T[2] = v3;
     return OK;
 }// InitTriplet
 
-//销毁三元组
+// 销毁三元组
 Status DestroyTriplet (Triplet &T)
 {
     if(T != NULL)
@@ -36,7 +36,7 @@ Status DestroyTriplet (Triplet &T)
     }
 }// DestroyTriplet
 
-//获取三元组中第 i 个元素的值
+// 获取三元组中第 i 个元素的值
 Status GetValue (const Triplet &T, int i, int &ans)
 {
     if(!(i >= 1 && i <= 3) || (T == NULL)) return ERROR;
@@ -44,7 +44,7 @@ Status GetValue (const Triplet &T, int i, int &ans)
     return OK;
 }// GetValue
 
-//将所给的值 'a' 放入三元组的指定位置 'i' 处
+// 将所给的值 'a' 放入三元组的指定位置 'i' 处
 Status PutValue (Triplet &T, int i = 0, int a = 0)
 {
     if(!(i >= 1 && i <= 3) || (T == NULL)) return ERROR;
@@ -52,7 +52,7 @@ Status PutValue (Triplet &T, int i = 0, int a = 0)
     return OK;
 }// PutValue
 
-//判断三元组的元素是否按照升序排列
+// 判断三元组的元素是否按照升序排列
 Status IsAscending (const Triplet &T)
 {
     if(T == NULL)
@@ -63,7 +63,7 @@ Status IsAscending (const Triplet &T)
         return FALSE;
 }// IsAscending
 
-//判断三元组的元素是否按照降序排列
+// 判断三元组的元素是否按照降序排列
 Status IsDecending (const Triplet &T)
 {
     if(T == NULL)
@@ -74,7 +74,7 @@ Status IsDecending (const Triplet &T)
         return FALSE;
 }// IsDecending
 
-//返回三元组中数值最大的元素
+// 返回三元组中数值最大的元素
 Status Max (const Triplet &T, int &ans)
 {
     if(T == NULL) return ERROR;
@@ -82,7 +82,7 @@ Status Max (const Triplet &T, int &ans)
     return OK;
 }// Max
 
-//返回三元组中数值最小的元素
+// 返回三元组中数值最小的元素
 Status Min (const Triplet &T, int &ans)
 {
     if(T == NULL) return ERROR;
@@ -95,7 +95,7 @@ int main()
     Triplet tp = NULL;
     int     ans = 0, min = 0, max = 0;
     InitTriplet(tp, 11, 14, 28);
-    printf("The data which used a regular way to access is : %d.\n", *(tp+1));    //访问第二个元素
+    printf("The data which used a regular way to access is : %d.\n", *(tp+1));    // 访问第二个元素
     if(GetValue(tp, 3, ans))
         printf("(Using function to access the data) : %d.\n", ans);
     if(Max(tp, max))
