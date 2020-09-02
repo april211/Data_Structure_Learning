@@ -37,7 +37,8 @@ Status GetValue(const Triplet &T, int i, int &ans)
     return OK;
 }// GetValue
 
-Status PutValue(Triplet &T, int i, int a)
+//将所给的值 'a' 放入三元组的指定位置 'i' 处
+Status PutValue(Triplet &T, int i = 0, int a = 0)
 {
     if(!(i >= 1 && i <= 3)) return ERROR;
     T[i - 1] = a;
@@ -78,14 +79,26 @@ Status Min(const Triplet &T, int &ans)
 
 int main()
 {
-    Triplet tp;
-    int     ans;
+    Triplet tp = NULL;
+    int     ans = 0, min = 0, max = 0;
     InitTriplet(tp, 11, 14, 28);
     printf("The data which used a regular way to access is : %d.\n", *(tp+1));    //访问第二个元素
     if(GetValue(tp, 3, ans))
         printf("(Using function to access the data) : %d.\n", ans);
+    if(Max(tp, max))
+        printf("The biggest value in this triplet is : %d.\n", max);
+    if(Min(tp, min))
+        printf("The smallest value in this triplet is : %d.\n", min);
     if(PutValue(tp, 3, 2001))
         printf("The 3rd element which has been edited is : %d.\n", tp[2]);
+    if(IsAscending(tp))
+        printf("This triplet is in an ascending order.\n");  
+    if(IsDecending(tp))
+        printf("This triplet is in a decending order.\n");  
+    if(Max(tp, max))
+        printf("The biggest value in this triplet is : %d.\n", max);
+    if(Min(tp, min))
+        printf("The smallest value in this triplet is : %d.\n", min);
     DestroyTriplet(tp);
 
     return 0;
