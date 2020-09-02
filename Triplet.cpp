@@ -13,7 +13,7 @@ typedef int *Triplet;   //指向整型的指针
 typedef int  Status;    //函数返回的状态值
 
 //初始化三元组
-Status InitTriplet(Triplet &T, int v1, int v2, int v3)
+Status InitTriplet (Triplet &T, int v1, int v2, int v3)
 {
     T = (int*)malloc(3* sizeof(int));
     if(!T) exit(OVERFLOW);              //如果存储空间分配失败，返回 OVERFLOW，中断进程
@@ -22,7 +22,7 @@ Status InitTriplet(Triplet &T, int v1, int v2, int v3)
 }// InitTriplet
 
 //销毁三元组
-Status DestroyTriplet(Triplet &T)
+Status DestroyTriplet (Triplet &T)
 {
     free(T);
     T = NULL;
@@ -30,7 +30,7 @@ Status DestroyTriplet(Triplet &T)
 }// DestroyTriplet
 
 //获取三元组中第 i 个元素的值
-Status GetValue(const Triplet &T, int i, int &ans)
+Status GetValue (const Triplet &T, int i, int &ans)
 {
     if(!(i >= 1 && i <= 3)) return ERROR;
     ans = T[i - 1];
@@ -38,7 +38,7 @@ Status GetValue(const Triplet &T, int i, int &ans)
 }// GetValue
 
 //将所给的值 'a' 放入三元组的指定位置 'i' 处
-Status PutValue(Triplet &T, int i = 0, int a = 0)
+Status PutValue (Triplet &T, int i = 0, int a = 0)
 {
     if(!(i >= 1 && i <= 3)) return ERROR;
     T[i - 1] = a;
@@ -46,7 +46,7 @@ Status PutValue(Triplet &T, int i = 0, int a = 0)
 }// PutValue
 
 //判断三元组的元素是否按照升序排列
-Status IsAscending(const Triplet &T)
+Status IsAscending (const Triplet &T)
 {
     if((T[0] <= T[1]) && (T[1] <= T[2]))
         return TRUE;
@@ -55,7 +55,7 @@ Status IsAscending(const Triplet &T)
 }// IsAscending
 
 //判断三元组的元素是否按照降序排列
-Status IsDecending(const Triplet &T)
+Status IsDecending (const Triplet &T)
 {
     if((T[0] >= T[1]) && (T[1] >= T[2]))
         return TRUE;
@@ -64,14 +64,14 @@ Status IsDecending(const Triplet &T)
 }// IsDecending
 
 //返回三元组中数值最大的元素
-Status Max(const Triplet &T, int &ans)
+Status Max (const Triplet &T, int &ans)
 {
     ans = (T[0] >= T[1])?((T[0] >= T[2])?T[0]:T[2]):((T[1] >= T[2])?T[1]:T[2]);
     return OK;
 }// Max
 
 //返回三元组中数值最小的元素
-Status Min(const Triplet &T, int &ans)
+Status Min (const Triplet &T, int &ans)
 {
     ans = (T[0] <= T[1])?((T[0] <= T[2])?T[0]:T[2]):((T[1] <= T[2])?T[1]:T[2]);
     return OK;
