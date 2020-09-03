@@ -95,12 +95,12 @@ int LocateElem (const List &L, int a, Status (*compare)(int, int))
 {
     int i = 1, len = ListLength(L);
     int *pt = L;
-    while(i <= len && !compare(*pt++, a))
+    while(i <= len && !compare(*pt++, a))       //优先级：*x >> x++
     {
         i++;
     }
-    if(i <= len)    return i;
-    else            return 0;
+    if(i <= len)    return i;                   
+    else            return 0;                   //如果不存在符合条件的元素，i 的值会超过 len 的值
 }// LocateElem
 
 // 判断前一个数是否比后一个数大
