@@ -152,7 +152,7 @@ Status NextElem (const List &L, int cur, int &next)
     {
         return ERROR;
     }
-}// PriorElem
+}// NextElem
 
 // 在顺序线性表中插入元素
 Status ListInsert (List &L, int i, int value)
@@ -172,6 +172,25 @@ Status ListInsert (List &L, int i, int value)
     return OK;                          // 插入成功
 }// ListInsert
 
+// 删除线性表中的第 i 个元素，并用 value 返回其值
+Status ListDelete (List &L, int i, int &value)
+{
+    int prelen = ListLength(L);         // 线性表在删除元素之前的长度
+    int aftlen = prelen - 1;            // 线性表在删除元素之后的长度
+    if(L == NULL || i < 1 || i > prelen)   return ERROR;
+    int *pt1 = &(L[i - 1]);         
+    value = *pt1;                       // 把将要删除的元素的值赋给 value  
+    pt1++;  
+    for(int *pt2 = &(L[prelen - 1]); pt2 >= pt1; pt1++)
+    {
+        *(pt1 - 1) = *pt1;
+    }
+    int *aftlist = (int*)realloc(L, aftlen* sizeof(int));
+    if(!aftlist)   exit(OVERFLOW);      // 若分配失败，原指针也不会失效
+    L = aftlist;
+    return OK;                          // 删除成功
+}// ListDelete
+
 // 打印出线性表中所有元素的值。可以自定义间隔符
 Status PrintAll (const List& L, char spacer)
 {
@@ -190,6 +209,44 @@ Status PrintAll (const List& L, char spacer)
     return OK;
 }// PrintAll
 
+// 访问单个数据元素，并获取它的值
+Status Visit (const List &L, int i, int &value)
+{
+    if(!L)  return ERROR;
+    else
+    {
+        value = L[i];
+        return OK;
+    }
+}// Visit
+
+
+// 顺序遍历、并以空格为间隔符输出线性表
+Status ListTraverse (const List &L, Status (*visit)(const List&, int, int&))
+{
+    if(!L)  return ERROR;
+    int len = ListLength(L);
+    for(int i = 0; i< len; i++)
+    {
+        int ans = 0;
+        if((*visit)(L, i, ans))
+        {
+            if(i == 0)
+                printf("%d", ans);
+            else
+            {
+                printf("%c%d", ' ', ans);
+            }
+        }
+        else
+        {
+            return ERROR;
+        }
+    }
+    printf("\n");
+    return OK;
+}
+
 int main()
 {
     List lp;
@@ -197,6 +254,7 @@ int main()
     Status (*equal)(int, int) = Equal;              // 定义一个函数指针。该指针使用函数 Equal 来赋值
     Status (*smaller)(int, int) = Smaller;          // 定义一个函数指针。该指针使用函数 Smaller 来赋值    
     Status (*bigger)(int, int) = Bigger;            // 定义一个函数指针。该指针使用函数 Bigger 来赋值    
+    Status (*visit)(const List&, int, int&) = Visit;
 
     InitList(lp, 10, 8);                            // 初始化一个线性表
     SetValue(lp, 2, 11);                            // 将第二个元素的值设置为 11
@@ -222,9 +280,11 @@ int main()
     if(ListInsert(lp, 1, 999))
         printf("Now the first element's value is : %d.\n", lp[0]);
     printf("Now we have %d element(s).\n", ListLength(lp));
-
     PrintAll(lp, ' ');
-
+    if(ListDelete(lp, 11, ans))
+        printf("A \"%d\" has been deleted.\n", ans);
+    printf("Now we have %d element(s).\n", ListLength(lp));
+    ListTraverse(lp, visit);
 
     DestroyList(lp);                                // 销毁该线性表
 
