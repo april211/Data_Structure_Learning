@@ -91,18 +91,42 @@ Status SetValue (List &L, int i, int value)
 }// PutValue
 
 //返回表中第一个与 a 满足关系 compare 的数据元素的位序（从 1 开始）。若这样的数据元素不存在，则返回值为 0。
-int LocateElem (const List &L, int a, )
+int LocateElem (const List &L, int a, Status (*compare)(int, int))
 {
-
-
-
-
+    int i = 1, len = ListLength(L);
+    int *pt = L;
+    while(i <= len && !compare(*pt++, a))
+    {
+        i++;
+    }
+    if(i <= len)    return i;
+    else            return 0;
 }// LocateElem
+
+//判断前一个数是否比后一个数大
+Status Bigger (int x, int y)
+{
+    return (x > y)?TRUE:FALSE;
+}// Bigger
+
+//判断前一个数是否比后一个数小
+Status Smaller (int x, int y)
+{
+    return (x < y)?TRUE:FALSE;
+}// Bigger
+
+//判断前一个数是是否等于后一个数
+Status Equal (int x, int y)
+{
+    return (x == y)?TRUE:FALSE;
+}// Bigger
 
 int main()
 {
     List lp;
     int  ans = 0;
+    Status (*equal)(int, int);
+    equal = Equal;
     InitList(lp, 10, 2);
     if(IsEmpty(lp))
         printf("This list is empty.\n");
@@ -111,6 +135,8 @@ int main()
         printf("The third element's value of this list is : %d.\n", ans);
     SetValue(lp, 2, 11);
     printf("The 2nd element's value of this list is : %d.\n", lp[1]);
+
+    printf("The location of the first \"11\" is : %d.\n", LocateElem(lp, 11, equal));
 
     DestroyList(lp);
 
