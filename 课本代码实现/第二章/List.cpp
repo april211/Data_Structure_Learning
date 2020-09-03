@@ -69,7 +69,7 @@ int ListLength (const List &L)
 // 获取线性表中第 i 个位置的数据元素的值 value
 Status GetElem (const List &L, int i, int &value)
 {
-    if(L == NULL)
+    if(L == NULL)   
         return ERROR;
     else
     {
@@ -93,6 +93,7 @@ Status SetValue (List &L, int i, int value)
 // 返回表中第一个与 a 满足关系 compare 的数据元素的位序（从 1 开始）。若这样的数据元素不存在，则返回值为 0。
 int LocateElem (const List &L, int a, Status (*compare)(int, int))
 {
+    if(L == NULL)   return ERROR;
     int i = 1, len = ListLength(L);
     int *pt = L;
     while(i <= len && !compare(*pt++, a))       //优先级：*x >> x++。注意不要越界
@@ -121,6 +122,74 @@ Status Equal (int x, int y)
     return (x == y)?TRUE:FALSE;
 }// Bigger
 
+// 获得某个元素的前驱（需要指定该元素的值，且只能寻找到第一个出现的元素）
+Status PriorElem (const List &L, int cur, int &pre)
+{
+    if(L == NULL)   return ERROR;
+    int location = LocateElem(L, cur, Equal);    //返回了位置
+    if(location && location != 1)
+    {
+        pre = L[location - 2];
+        return OK;
+    }
+    else
+    {
+        return ERROR;
+    }
+}// PriorElem
+
+// 获得某个元素的后继（需要指定该元素的值，且只能寻找到第一个出现的元素）
+Status NextElem (const List &L, int cur, int &next)
+{
+    if(L == NULL)   return ERROR;
+    int location = LocateElem(L, cur, Equal);    //返回了位置
+    if(location && location != ListLength(L))
+    {
+        next = L[location];
+        return OK;
+    }
+    else
+    {
+        return ERROR;
+    }
+}// PriorElem
+
+// 在顺序线性表中插入元素
+Status ListInsert (List &L, int i, int value)
+{
+    int prelen = ListLength(L);         // 线性表在插入元素之前的长度
+    int aftlen = prelen + 1;            // 线性表在插入元素之后的长度
+    if(L == NULL || i < 1 ||( i > (prelen + 1)))   return ERROR;
+    int *aftlist = (int*)realloc(L, aftlen* sizeof(int));
+    if(!aftlist)   exit(OVERFLOW);      // 若分配失败，原指针也不会失效
+    L = aftlist;
+    int *ptstill = &(L[i - 1]);         // 设立目标位置指针（静止）
+    for(int *ptmove = &(L[prelen - 1]); ptmove >= ptstill; ptmove--)
+    {
+        *(ptmove + 1) = *ptmove;        // 从原线性表的最后一个元素开始，依次向后移动
+    }
+    *ptstill = value;                   // 在最终空出来的位置写入新值（目标值）
+    return OK;                          // 插入成功
+}// ListInsert
+
+// 打印出线性表中所有元素的值。可以自定义间隔符
+Status PrintAll(const List& L, char spacer)
+{
+    if(!L)  return ERROR;
+    int len = ListLength(L);
+    for(int i = 0; i < len; i++)
+    {
+        if(i == 0)
+            printf("%d", L[i]);
+        else
+        {
+            printf("%c%d", spacer, L[i]);
+        }
+    }
+    printf("\n");
+    return OK;
+}// PrintAll
+
 int main()
 {
     List lp;
@@ -129,19 +198,36 @@ int main()
     Status (*smaller)(int, int) = Smaller;          // 定义一个函数指针。该指针使用函数 Smaller 来赋值    
     Status (*bigger)(int, int) = Bigger;            // 定义一个函数指针。该指针使用函数 Bigger 来赋值    
 
-    InitList(lp, 10, 2);                            // 初始化一个线性表
+    InitList(lp, 10, 8);                            // 初始化一个线性表
+    SetValue(lp, 2, 11);                            // 将第二个元素的值设置为 11
+    SetValue(lp, 3, 14);
+    SetValue(lp, 4, 28);
+    SetValue(lp, 10, 444);
     if(IsEmpty(lp))                                 // 判断一下这个表是不是空的 
         printf("This list is empty.\n");
+    PrintAll(lp, ' ');
     printf("The length of this list is : %d.\n", ListLength(lp));
     if(GetElem(lp, 3, ans))                         // 获取第三个元素的值
         printf("The third element's value of this list is : %d.\n", ans);
-    SetValue(lp, 2, 11);                            // 将第二个元素的值设置为 11
     printf("The 2nd element's value of this list is : %d.\n", lp[1]);
 
     //使用定位函数，结合函数指针来获得符合条件的元素的位序
     printf("The location of the first \"11\" is : %d.\n", LocateElem(lp, 11, equal));
 
+    if(PriorElem(lp, 14, ans))  
+        printf("The value of the element which before the first \"14\" is : %d.\n", ans);
+    if(NextElem(lp, 14, ans))  
+        printf("The value of the element which after the first \"14\" is : %d.\n", ans);    
+
+    if(ListInsert(lp, 1, 999))
+        printf("Now the first element's value is : %d.\n", lp[0]);
+    printf("Now we have %d element(s).\n", ListLength(lp));
+
+    PrintAll(lp, ' ');
+
+
     DestroyList(lp);                                // 销毁该线性表
+
 
     return 0;
 }
