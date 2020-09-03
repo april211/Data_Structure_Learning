@@ -114,13 +114,13 @@ Status Bigger (int x, int y)
 Status Smaller (int x, int y)
 {
     return (x < y)?TRUE:FALSE;
-}// Bigger
+}// Smaller
 
 // 判断前一个数是是否等于后一个数
 Status Equal (int x, int y)
 {
     return (x == y)?TRUE:FALSE;
-}// Bigger
+}// Equal
 
 // 获得某个元素的前驱（需要指定该元素的值，且只能寻找到第一个出现的元素）
 Status PriorElem (const List &L, int cur, int &pre)
@@ -173,7 +173,7 @@ Status ListInsert (List &L, int i, int value)
 }// ListInsert
 
 // 打印出线性表中所有元素的值。可以自定义间隔符
-Status PrintAll(const List& L, char spacer)
+Status PrintAll (const List& L, char spacer)
 {
     if(!L)  return ERROR;
     int len = ListLength(L);
