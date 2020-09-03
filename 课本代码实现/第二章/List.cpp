@@ -95,7 +95,7 @@ int LocateElem (const List &L, int a, Status (*compare)(int, int))
 {
     int i = 1, len = ListLength(L);
     int *pt = L;
-    while(i <= len && !compare(*pt++, a))       //优先级：*x >> x++
+    while(i <= len && !compare(*pt++, a))       //优先级：*x >> x++。注意不要越界
     {
         i++;
     }
