@@ -1,6 +1,8 @@
 #include <cstdio>
 #include <cstdlib>
 
+// 顺序线性表的简单实现
+
 // 函数所返回的错误代码
 #define TRUE        1
 #define FALSE       0
