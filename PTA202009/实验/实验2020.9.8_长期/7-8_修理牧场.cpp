@@ -1,45 +1,63 @@
-#include <cstdio>
-#include <cstdlib>
 #include <algorithm>
 #include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <queue>
 using namespace std;
 
-// 二叉树的三叉链表表示 + Huffman 算法
-
-typedef struct HFNode
+bool Smaller(int x, int y)
 {
-    int weight;                 // 数据域
-    struct HFNode *lchild;     // 左子树指针
-    struct HFNode *rchild;     // 右子树指针
-    struct HFNode *parent;     // 双亲指针
-}HFNode, *HFTree;
-
-bool compare_t(int x, int y)
-{
-    return x<y;
-}
-
-HFTree CreateHFtree(int* elarray, int n)
-{
-
-
-
-
+    return x < y;
 }
 
 int main()
 {
-    int n = 0;
-    scanf("%d", &n);
-    int *elarray = (int*)malloc(n* sizeof(int));
-    for (int i = 0; i< n; i++)
+    int N = 0, cost = 0;
+    priority_queue<int, vector<int>, greater<int>> wood_sec;
+    scanf("%d", &N);
+    for (int i = 0; i < N; i++)
     {
-        scanf("%d", &(elarray[i]));
-    }// 输入结束
-    sort(elarray, elarray + n, compare_t);
+        int tt = 0;
+        scanf("%d", &tt);
+        wood_sec.push(tt);
+    } // 输入结束
 
+    if (N == 1)
+    {
+        printf("%d", 0);
+        return 0;
+    }
+    else
+    {
+        int sm1 = 0, sm2 = 0;
+        sm1 = wood_sec.top();
+        wood_sec.pop();
+        sm2 = wood_sec.top();
+        wood_sec.pop();
+        cost += sm1 + sm2;
+        wood_sec.push(sm1 + sm2);
 
+        while (!wood_sec.empty())
+        {
+            if (wood_sec.size() == 1) // 取不出两个来（不用比较）
+            {
+                wood_sec.pop();
+            }
+            else
+            {
+                int ttsm1 = 0, ttsm2 = 0, tt = 0;
+                ttsm1 = wood_sec.top();
+                wood_sec.pop();
+                ttsm2 = wood_sec.top();
+                wood_sec.pop();
+                tt = ttsm1 + ttsm2;
+                cost += tt;
+                wood_sec.push(tt);
+            }
+        }
 
+        printf("%d", cost);
+    }
 
     return 0;
 }
