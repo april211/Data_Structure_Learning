@@ -5,6 +5,9 @@
 #include <queue>
 using namespace std;
 
+// 使用了优先队列。同目录下有相同思路但超时的方法（用自写栈 + sort实现）
+
+
 bool Smaller(int x, int y)
 {
     return x < y;
