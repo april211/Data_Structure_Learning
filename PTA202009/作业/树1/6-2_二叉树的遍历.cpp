@@ -126,3 +126,70 @@ Inorder: H D I B J E K A L F M C N G O
 Preorder: A B D H I E J K C F L M G N O
 Postorder: H I D J K E B L M F N O G C A
 Levelorder: A B C D E F G H I J K L M N O */
+
+/* 6-2 二叉树的遍历 (25分)
+本题要求给定二叉树的4种遍历。
+
+函数接口定义：
+void InorderTraversal( BinTree BT );
+void PreorderTraversal( BinTree BT );
+void PostorderTraversal( BinTree BT );
+void LevelorderTraversal( BinTree BT );
+其中BinTree结构定义如下：
+
+typedef struct TNode *Position;
+typedef Position BinTree;
+struct TNode{
+    ElementType Data;
+    BinTree Left;
+    BinTree Right;
+};
+要求4个函数分别按照访问顺序打印出结点的内容，格式为一个空格跟着一个字符。
+
+裁判测试程序样例：
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef char ElementType;
+typedef struct TNode *Position;
+typedef Position BinTree;
+struct TNode{
+    ElementType Data;
+    BinTree Left;
+    BinTree Right;
+};
+
+BinTree CreatBinTree(); */ /* 实现细节忽略 */
+/* void InorderTraversal( BinTree BT );
+void PreorderTraversal( BinTree BT );
+void PostorderTraversal( BinTree BT );
+void LevelorderTraversal( BinTree BT );
+
+int main()
+{
+    BinTree BT = CreatBinTree();
+    printf("Inorder:");    InorderTraversal(BT);    printf("\n");
+    printf("Preorder:");   PreorderTraversal(BT);   printf("\n");
+    printf("Postorder:");  PostorderTraversal(BT);  printf("\n");
+    printf("Levelorder:"); LevelorderTraversal(BT); printf("\n");
+    return 0;
+} */
+/* 你的代码将被嵌在这里 */
+/* 输出样例（对于图中给出的树）：
+
+
+Inorder: D B E F A G H C I
+Preorder: A B D F E C G H I
+Postorder: D E F B H G I C A
+Levelorder: A B C D F G I E H
+作者
+陈越
+单位
+浙江大学
+代码长度限制
+16 KB
+时间限制
+400 ms
+内存限制
+64 MB
+ */
