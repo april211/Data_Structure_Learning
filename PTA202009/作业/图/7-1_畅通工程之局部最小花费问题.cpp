@@ -46,10 +46,10 @@ int main()
         }
     }// 输入完毕
 
-    // 从一号节点开始，将整个节点集分为两大部分
+    // 从一号节点开始，将整个节点集分为两大部分：U 和 V-U
     in_u[1] = 1;
 
-    // 载入其他各节点到起始点的代价
+    // 载入其他各节点到集合 U 的代价
     for(int i = 1; i<= N; i++)
     {
         if(i == 1)
@@ -78,18 +78,18 @@ int main()
         // 更新 weigth 数列（原因是有新的节点加入到了集合 U 中，需要更新 V-U 到 U 的最小代价，看看有没有更小的代价可以更新到该数组中）
         for(int j = 1; j<= N; j++)
         {
-            if((!in_u[j]) && (matrix[node][j] < weight[j]))
+            if((!in_u[j]) && (weight[j] > matrix[node][j]))
             {
-                weight[j] = matrix[node][j];
+                weight[j] = matrix[node][j];    // 更新为更小的代价
             }
         }
-    }
+    }// 此时，weight 数组中存储的就是最小生成树各边的权值
 
     int sum_cost = 0;   // 新修建的路的总花费
     for(int i = 1; i<= N; i++)
     {
         sum_cost += weight[i];
-    }
+    }// 对数组中元素求和即可
 
     printf("%d", sum_cost);
 
