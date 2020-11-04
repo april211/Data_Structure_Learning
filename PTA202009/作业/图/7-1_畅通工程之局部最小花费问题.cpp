@@ -3,14 +3,9 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cmath>
-#include <stack>
-#include <vector>
-#define MAX_SIDE 106
 #define inf 0x3f3f3f3f
 using namespace std;
 
-stack<int> empty_row;
-stack<int> empty_column;
 
 int main()
 {
@@ -21,7 +16,7 @@ int main()
     int in_u[N+6] = {0,}, weight[N+6] = {0,};    // 初始化为 0
     int n_line = (N%2==0)?((N/2)*(N-1)):(((N-1)/2)*N);  // 输入行数
 
-    // 准备使用 Prim算法，初始化矩阵为不可到达（边的权值为无穷大）
+    // 准备使用 Prim算法，初始化主矩阵为不可到达（边的权值为无穷大）
     for(int i = 1; i<= N; i++)
     {
         for(int j = 1; j<= N; j++)
@@ -49,20 +44,21 @@ int main()
     // 从一号节点开始，将整个节点集分为两大部分：U 和 V-U
     in_u[1] = 1;
 
-    // 载入其他各节点到集合 U 的代价
+    // 辅助数组初始化，即载入其他各节点到集合 U 的新增节点（起始节点） 的代价
     for(int i = 1; i<= N; i++)
     {
         if(i == 1)
         {
-            weight[i] = 0;      // 代价为零，表示该点已经并入集合 U
+            weight[i] = 0;   // 初始结点不贡献代价，后面每增加一个结点才会贡献出一个代价（边），共计 n-1 个代价（边）
         }
         else
         {
-            weight[i] = matrix[1][i];
+            weight[i] = matrix[1][i];   // 可能有 inf，代表暂时无法到达（代价无穷大）
         }
     }
 
-    for(int i = 0; i< N; i++)
+    // 一共需要找 N 遍（前面已经加入了一个点，所以这里是 N-1 遍），每一遍只向集合 U 中添加一个节点
+    for(int i = 0; i< N-1; i++)
     {
         int min = inf, node = 0;
         for(int j = 1; j<= N; j++)
@@ -73,7 +69,7 @@ int main()
                 node = j;
             }
         }// 在集合 V-U 中找到到达 U 的最小代价，并记录节点号
-        in_u[node] = 1;      // 将该节点归入集合 U 中
+        in_u[node] = 1;      // 将该节点归入集合 U 中，但是不删除它在辅助数组中的代价
 
         // 更新 weigth 数列（原因是有新的节点加入到了集合 U 中，需要更新 V-U 到 U 的最小代价，看看有没有更小的代价可以更新到该数组中）
         for(int j = 1; j<= N; j++)
