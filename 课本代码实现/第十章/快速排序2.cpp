@@ -16,7 +16,7 @@ void Swap(Type &a, Type &b)
 template<class Type>
 int Partition(Type a[], int pivot, int r)
 {
-    int i = pivot, j = r+1;
+    int i = pivot, j = r+1;             // 这里默认的 pivot 元素是最左边的元素
     Type x = a[pivot];                  // 将 pivot 处的元素挖出来 
     while(1)
     {
