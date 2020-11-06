@@ -16,7 +16,7 @@ void Swap(Type &a, Type &b)
 template<class Type>
 int Partition(Type a[], int pivot, int r)
 {
-    int i = pivot, j = r+1;             // 这里默认的 pivot 元素是最左边的元素
+    int i = pivot, j = r+1;             // 这里默认的 pivot 元素是最左边的元素 
     Type x = a[pivot];                  // 将 pivot 处的元素挖出来 
     while(1)
     {
@@ -27,6 +27,7 @@ int Partition(Type a[], int pivot, int r)
     }
     a[pivot] = a[j];                    // 将占有 pivot 应当存放的位置上的元素挖出来，并填到现在 pivot 元素的位置
     a[j] = x;                           // 将之前挖出来的 pivot 元素填到上一步挖出来的坑上
+
     return j;                           // 返回此时 pivot 元素的下标
 }
 
@@ -44,11 +45,18 @@ void QuickSort(Type a[], int l, int r)
 
 int main()
 {
-    int a[] = {2, 3, 7, 30, 4, 9, 0, -1};
-    QuickSort(a, 0, 7);                 // 0 ~ N-1
-    for(int i = 0; i< 8; i++)
+    int a[] = {5, 2, 5};
+    int N = sizeof(a)/sizeof(int);
+    QuickSort(a, 0, N-1);                 // 0 ~ N-1
+    for(int i = 0; i< N; i++)
     {
         printf("%d ", a[i]);
     }
 }
 
+/*     for(int i = 0; i <= r; i++)      // 这是供检查使用的代码，可以拷贝到 Partition 函数的特定位置来检查变化
+    {
+        printf("%d ", a[i]);
+    }
+    printf("\n"); */
+    
