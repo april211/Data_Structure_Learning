@@ -107,7 +107,7 @@ int main()
 
     LevelorderTraversal(bt, cnt);
     if (cnt == N)
-        printf("\nYES");
+        printf("\nYES");            // 这里注意和第一个题不一样，字母都是大写！！！！啊啊啊卡了好久！！
     else
         printf("\nNO");
 
