@@ -1,13 +1,6 @@
-#include <algorithm>
-#include <cmath>
 #include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <iomanip>
 #include <iostream>
 #include <queue>
-#include <stack>
-#include <vector>
 
 using namespace std;
 #define inf 0x3f3f3f3f
@@ -59,13 +52,13 @@ void InitBiTree(BiTree &bt)
     bt->Right = NULL;
 }
 
-void LevelorderTraversal(const BiTree &bt)
+void LevelorderTraversal(const BiTree &bt, int &cnt)
 {
     if (!bt)
         return;
     queue<BiTree> lrtree;
     lrtree.push(bt);
-    int flag = 0;
+    int flag = 0, ff = 0;
     while (!lrtree.empty())
     {
         BiTree tt = lrtree.front();
@@ -81,70 +74,26 @@ void LevelorderTraversal(const BiTree &bt)
                 printf(" %d", tt->Data);
             }
 
+            if (ff == 0)
+            {
+                cnt++;      // 计算遇到空节点前遍历的节点总数目
+            }
+
             lrtree.push(tt->Left);
             lrtree.push(tt->Right);
-            lrtree.pop();
         }
-    }
-}
-
-/* // 层序遍历（模拟队列实现）
-void LevelorderTraversal(const BiTree &BT)
-{
-    if (!BT)
-        return;
-    BiTree temp[400]; // 顺序队列（图省事，题目限定编译头，且不让用 C++）
-    int in = 0;
-    int out = 0;
-    int flag = 0;
-
-    temp[in++] = BT; // root
-
-    while (in > out) // 队列为空时，树就遍历完了
-    {
-        if (temp[out]) // 该指针不是空的，输出它所指向的节点的值，并把他的左右孩子入队列
+        else        // 遇到空节点
         {
-            if (flag == 0)
-            {
-                printf("%d", temp[out]->Data);
-                flag++;
-            }
-            else
-            {
-                printf(" %d", temp[out]->Data);
-            }
-            temp[in++] = temp[out]->Left;
-            temp[in++] = temp[out]->Right;
+            ff++;   // 停止计数
         }
-        out++; // 原节点出队列
-    }
-} */
 
-// 中序遍历
-void InorderTraversal(const BiTree &BT)
-{
-    static int flag = 0;
-    if (!BT)
-        return;
-    else
-    {
-        InorderTraversal(BT->Left);
-        if (flag == 0)
-        {
-            printf("%d", BT->Data);
-            flag++;
-        }
-        else
-        {
-            printf(" %d", BT->Data);
-        }
-        InorderTraversal(BT->Right);
+        lrtree.pop();
     }
 }
 
 int main()
 {
-    int N;
+    int N, cnt = 0;
     scanf("%d", &N);
     BiTree bt;
     InitBiTree(bt);
@@ -156,8 +105,11 @@ int main()
         InsertNode(bt, tt); // 构造二叉树（还剩 N-1 个节点未加入）
     }
 
-    LevelorderTraversal(bt);
-    //InorderTraversal(bt);
+    LevelorderTraversal(bt, cnt);
+    if (cnt == N)
+        printf("\nYES");
+    else
+        printf("\nNO");
 
     return 0;
 }

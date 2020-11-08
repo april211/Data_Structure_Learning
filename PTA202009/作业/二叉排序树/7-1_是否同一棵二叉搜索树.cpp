@@ -65,7 +65,7 @@ void InitBiTree(BiTree &bt)
 {
     int tt;
     scanf("%d", &tt);
-    //printf("###########\n");
+    bt = (BiTree)malloc(sizeof(TNode));
     bt->Data = tt;
     bt->Left = NULL;
     bt->Right = NULL;
@@ -75,20 +75,19 @@ int main()
 {
     int N, L;
     scanf("%d", &N);
-    //printf("###########\n");
     while (N)
     {
         scanf("%d", &L);
         BiTree origin;      // 初始插入序列形成的二叉树
         InitBiTree(origin); // 载入第一个元素
         
-        printf("---------\n");
         for (int i = 1; i < N; i++)
         {
             int tt;
             scanf("%d", &tt);
             InsertNode(origin, tt); // 构造二叉树（还剩 N-1 个节点未加入）
         }
+        
         for (int i = 0; i < L; i++) // L行
         {
             BiTree second; // 后插入序列形成的二叉树
