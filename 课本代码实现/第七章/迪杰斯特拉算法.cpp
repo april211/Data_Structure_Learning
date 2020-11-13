@@ -1,5 +1,5 @@
-#include <cstring>
 #include <iostream>
+#include <string.h>
 using namespace std;
 
 #define len 100
@@ -9,7 +9,7 @@ class Graph
 {
     // 内部类
 private:
-    // 邻接表中表对应的链表的顶点
+    // 邻接表中表对应的链表的顶点（链表节点）
     class ENode
     {
     public:
@@ -18,7 +18,7 @@ private:
         ENode *nextEdge; // 指向下一条弧
     };
 
-    // 邻接表中表的顶点
+    // 邻接表中表的顶点（数组元素）
     class VNode
     {
     public:
@@ -104,7 +104,6 @@ public:
         }
     }
 
-    // 相邻节点链接子函数
     void linkLast(ENode *p1, ENode *p2)
     {
         ENode *p = p1;
@@ -145,7 +144,6 @@ public:
         cout << endl;
     }
 
-    // 得到两个节点之间的权重
     int getWeight(int m, int n)
     {
         ENode *enode = mVexs[m].firstEdge;
@@ -160,87 +158,85 @@ public:
         return INF;
     }
 
-    // 弗洛伊德算法
-    void floyd()
+    // 迪杰斯特拉算法
+    void dijkstra(int start)
     {
-        int dist[n][n]; // 距离矩阵
-        int path[7][7]; // 路径矩阵, 7为节点数目
-        int i, j, k;
+        int i, j, k, min;
         int temp;
+        int dist[n]; // 距离数组
+        int flag[n]; // 记录是否已找到最小距离,已找到为1，没找到为0
+        int prev[n]; // 当前节点的最短路径中前一个节点
 
-        // 初始化权重
+        // 初始化
         for (i = 0; i < n; i++)
         {
-            for (j = 0; j < n; j++)
-            {
-                if (i == j)
-                {
-                    dist[i][j] = 0;
-                }
-                else
-                {
-                    dist[i][j] = getWeight(i, j);
-                }
-                path[i][j] = i;         // 这里的初始化是必要的，表示路径末节点的前驱，供后面回溯输出路径用
-            }
+            dist[i] = getWeight(start, i);  // 导入自起始点伸展的所有的边的代价（没有的是 INF）
+            flag[i] = 0;                    // 均为未访问状态
+            prev[i] = start;                // 起始节点是路径的前一个结点
         }
 
-        // floyd 算法开始
-        for (k = 0; k < n; k++)
+        dist[start] = 0;                    // 确保到达起始节点的代价为 0
+        flag[start] = 1;                    // 已访问起始节点
+
+        // 注意这里有一个坑，比如一共有 n个节点，目前已知 start->start距离为0，
+        // 　　则现在只要求出 start->剩下 n-1个节点最短距离即可，所以此处循环次数是 n-1次，而不是 n次
+        for (j = 0; j < n - 1; j++)
         {
+            min = INF;
+            // 找到目前 dist 中的距离最短节点
             for (i = 0; i < n; i++)
             {
-                for (j = 0; j < n; j++)
+                if (flag[i] == 0 && dist[i] < min)
                 {
-                    temp = (dist[i][k] == INF || dist[k][j] == INF) ? INF : (dist[i][k] + dist[k][j]);
-                    if (temp < dist[i][j])
-                    {
-                        dist[i][j] = temp;
-                        path[i][j] = path[k][j];
-                    }
+                    min = dist[i];
+                    k = i;          // 记录该节点
+                }
+            }
+
+            // cout<<mVexs[k].data<<" "<<min<<endl; 可将大循环中的 n-1改为 n，看这句话执行效果，将会明白我说的坑的含义
+            dist[k] = min;
+            flag[k] = 1;            // 下一步将在该节点上拓展边与新结点，在此过程中可能产生其他节点到起始节点更短的路径
+
+            // 更新最短距离
+            for (i = 0; i < n; i++)
+            {
+                temp = dist[k] + getWeight(k, i);       // 注意，这里是合计路径长度
+                if (flag[i] == 0 && temp < dist[i])
+                {
+                    dist[i] = temp;
+                    prev[i] = k;
                 }
             }
         }
 
-        // 打印出两点之间最短距离 + 路径
-        for (i = 0; i < n - 1; i++)
+        // 输出最短距离
+        for (i = 0; i < n; i++)
         {
-            for (j = i + 1; j < n; j++)
+            if (i == start)
             {
-                if (dist[i][j] < 10)
-                {
-                    cout << mVexs[i].data << " -> " << mVexs[j].data << ": " << dist[i][j] << "  , path is: ";
-                }
-                else
-                {
-                    cout << mVexs[i].data << " -> " << mVexs[j].data << ": " << dist[i][j] << " , path is: ";
-                }
-                getPath(i, j, path);
+                cout <<"The shortest path's length between "<< mVexs[start].data << " and " << mVexs[start].data << " is : " << dist[i] << "  , path : " << mVexs[start].data << " " << mVexs[start].data << endl;
+            }
+            else
+            {
+                cout <<"The shortest path's length between " << mVexs[start].data << " and " << mVexs[i].data << " is : " << dist[i] << " , path : ";
+                getPath(i, start, prev);
                 cout << endl;
             }
-            cout << endl;
+            // cout<<mVexs[start].data<<" -> "<<mVexs[i].data<<" 最短距离为: "<<dist[i]<<endl;
         }
-
-        // 输出路径矩阵观察, 可用此矩阵自己用笔演算一下路径查找过程
-        // for(i = 0; i < n; i++){
-        //     for(j = 0; j < n; j++){
-        //         cout<<path[i][j]<<" ";
-        //     }
-        //     cout<<endl;
-        // }
     }
 
-    // 递归实现得到节点之间最短路径
-    void getPath(int start, int end, int path[][7])
+    // 得到 dijkstra 节点之间最短路径
+    void getPath(int i, int start, int prev[])
     {
-        if (path[start][end] == start)
+        if (i == start)
         {
-            cout << mVexs[start].data << " " << mVexs[end].data << " ";
+            cout << mVexs[i].data << " ";
         }
         else
         {
-            getPath(start, path[start][end], path);
-            cout << mVexs[end].data << " ";
+            getPath(prev[i], start, prev);
+            cout << mVexs[i].data << " ";
         }
     }
 };
@@ -251,10 +247,12 @@ int main()
     // 输出邻接表
     // g.print();
 
-    // 弗洛伊德算法
-    g.floyd();
+    char start;
+    cout << "Please enter the initial node: ";
+    cin >> start;
+    g.dijkstra(g.get_Node_Index(start));
     return 0;
 }
 
-
-// 参考：https://www.jianshu.com/p/f73c7a6f5a53
+// 原地址：https://www.jianshu.com/p/8f4c869b321e
+// 有改动
