@@ -5,159 +5,161 @@
 #include <cstring>
 #include <iomanip>
 #include <iostream>
-#include <queue>
 #include <stack>
 #include <vector>
 
-using namespace std;
-#define inf 0x3f3f3f3f
+#define max_vnum 10
+#define INF 999999
+#define FALSE 0
+#define TRUE 1
+#define DEFAULT -1
 
-// 二叉树结点
-typedef struct TNode
-{
-    int Data;
-    TNode *Left;
-    TNode *Right;
-} TNode;
-typedef TNode *BiTree;
+using std::vector;
 
-// 按照规则向二叉树中插入一个节点
-void InsertNode(BiTree &bt, int value) // 二叉树类型，N 个节点，要插入的结点的值
+// 邻接矩阵双度规信息
+typedef struct Info
 {
-    TNode *pt = bt;
-    if ((!(pt->Left)) && ((value) > (pt->Data))) // 如果左子树为空，并且新节点的值比此根节点的值小
+    int miles; // 城市间路程长度
+    int costs; // 路花费的钱
+} Info;
+
+Info Graph_Adj[max_vnum][max_vnum]; // 图的邻接带权矩阵
+vector<int> prevex[max_vnum];       // 记录当前节点的前一个结点
+int distance[max_vnum];             // 存储起始节点到某个节点的距离
+bool final[max_vnum];               // 若已经求得从起始点到该点的最短路径（已确定），则为 TRUE
+
+// 返回整型向量容器中的元素之和
+int sum_vector(const vector<int> &v)
+{
+    int sum = 0, n = v.size();
+    for (int i = 0; i < n; i++)
     {
-        BiTree add = (BiTree)malloc(sizeof(TNode));
-        add->Data = value, add->Left = add->Right = NULL;
-        pt->Left = add;
-        return;
+        sum += v[i];
     }
-    else if ((!(pt->Right)) && ((value) < (pt->Data)))
+    return sum;
+}
+
+// Dijkstra A.
+void DIJ(int start, int n) // 起始节点编号 节点总数目
+{
+    // 初始化起始点到各个节点的距离为 INF，各节点均未确定最短路径（FALSE）
+    for (int i = 0; i < n; i++)
     {
-        BiTree add = (BiTree)malloc(sizeof(TNode));
-        add->Data = value, add->Left = add->Right = NULL;
-        pt->Right = add;
-        return;
+        distance[i] = INF, final[i] = FALSE;
     }
-    else if ((value) > (pt->Data)) // 左右节点都不为空，需要递归求解
+
+    // 将起始节点到起始节点的距离赋值为 0
+    distance[start] = 0;
+
+    // 执行 n遍
+    for (int i = 0; i < n; i++)
     {
-        return InsertNode(pt->Left, value);
+        // 寻找中介点编号 mid
+        int mid = DEFAULT, min_value = INF; // 中介点、最小值（注意在内层循环之外）
+        for (int j = 0; j < n; j++)
+        {
+            if ((!final[j]) && (distance[j] < min_value)) // 找到了距离起始节点最近的结点
+            {
+                mid = j; // 第一轮与起始节点相同
+                min_value = distance[j];
+            }
+        }
+
+        // 若找不到可用的中介点，则说明所有的节点均已确定最短路径长度，应当结束算法
+        if (mid == DEFAULT)
+            return;
+
+        // 本轮的中介点标记为已访问
+        final[mid] = TRUE;
+
+        // 藉由中介点拓展，使起始节点到其他节点的距离变小
+        for (int j = 0; j < n; j++)
+        {
+            // 该点尚未确定最短路径长度，且中介点可以直接到达该点
+            if ((!final[j]) && (Graph_Adj[mid][j].miles != INF))
+            {
+                // 经过中介点后路径变短，更新最短路径
+                if (distance[mid] + Graph_Adj[mid][j].miles < distance[j]) //WRONG: Graph_Adj[start][mid]
+                {
+                    distance[j] = distance[mid] + Graph_Adj[mid][j].miles;
+                    prevex[j].clear();
+                    prevex[j].push_back(mid); // 该中介点是 j号节点的前一个节点
+                }
+                else if (distance[mid] + Graph_Adj[mid][j].miles == distance[j]) // 若相等，保存该节点，不删除旧的
+                {
+                    prevex[j].push_back(mid);
+                }
+            }
+        }
+    }
+}
+
+int minimum = INF;
+
+vector<int> temp_path; // 暂存路径
+
+void find_paths(int start, int d)
+{
+    if (start == d)
+    {
+        temp_path.push_back(start);
+        int value = 0;
+        for (int i = 0; i < temp_path.size()-1; i++)
+        {
+            //printf("--> %d <--\n", Graph_Adj[temp_path[i]][temp_path[i+1]].costs);
+            value += Graph_Adj[temp_path[i]][temp_path[i+1]].costs;
+        }
+        //printf("Value : %d\n", value);
+        if (value < minimum)
+        {
+            minimum = value;
+        }
+        temp_path.pop_back();
+        return;
     }
     else
     {
-        return InsertNode(pt->Right, value);
-    }
-}
-
-void InitBiTree(BiTree &bt)
-{
-    int tt;
-    scanf("%d", &tt);
-    bt = (BiTree)malloc(sizeof(TNode));
-    bt->Data = tt;
-    bt->Left = NULL;
-    bt->Right = NULL;
-}
-
-void LevelorderTraversal(const BiTree &bt)
-{
-    if (!bt)
-        return;
-    queue<BiTree> lrtree;
-    lrtree.push(bt);
-    int flag = 0;
-    while (!lrtree.empty())
-    {
-        BiTree tt = lrtree.front();
-        if (tt) // 非空执行
+        temp_path.push_back(d); // 压入末端节点
+        for (int i = 0; i < prevex[d].size(); i++)
         {
-            if (flag == 0)
-            {
-                printf("%d", tt->Data);
-                flag++;
-            }
-            else
-            {
-                printf(" %d", tt->Data);
-            }
-
-            lrtree.push(tt->Left);
-            lrtree.push(tt->Right);
-            lrtree.pop();
+            find_paths(start, prevex[d][i]);
         }
-    }
-}
-
-/* // 层序遍历（模拟队列实现）
-void LevelorderTraversal(const BiTree &BT)
-{
-    if (!BT)
-        return;
-    BiTree temp[400]; // 顺序队列（图省事，题目限定编译头，且不让用 C++）
-    int in = 0;
-    int out = 0;
-    int flag = 0;
-
-    temp[in++] = BT; // root
-
-    while (in > out) // 队列为空时，树就遍历完了
-    {
-        if (temp[out]) // 该指针不是空的，输出它所指向的节点的值，并把他的左右孩子入队列
-        {
-            if (flag == 0)
-            {
-                printf("%d", temp[out]->Data);
-                flag++;
-            }
-            else
-            {
-                printf(" %d", temp[out]->Data);
-            }
-            temp[in++] = temp[out]->Left;
-            temp[in++] = temp[out]->Right;
-        }
-        out++; // 原节点出队列
-    }
-} */
-
-// 中序遍历
-void InorderTraversal(const BiTree &BT)
-{
-    static int flag = 0;
-    if (!BT)
-        return;
-    else
-    {
-        InorderTraversal(BT->Left);
-        if (flag == 0)
-        {
-            printf("%d", BT->Data);
-            flag++;
-        }
-        else
-        {
-            printf(" %d", BT->Data);
-        }
-        InorderTraversal(BT->Right);
+        temp_path.pop_back();
     }
 }
 
 int main()
 {
-    int N;
-    scanf("%d", &N);
-    BiTree bt;
-    InitBiTree(bt);
+    // N（2≤N≤500）是城市的个数，顺便假设城市的编号为 0 ~ (N−1)
+    // M是快速道路的条数；S是出发地的城市编号；D是目的地的城市编号
+    int N = 0, M = 0, S = 0, D = 0;
+    scanf("%d%d%d%d", &N, &M, &S, &D);
 
-    for (int i = 1; i < N; i++)
+    // 初始化双度规邻接矩阵
+    for (int i = 0; i < max_vnum; i++)
     {
-        int tt;
-        scanf("%d", &tt);
-        InsertNode(bt, tt); // 构造二叉树（还剩 N-1 个节点未加入）
+        for (int j = 0; j < max_vnum; j++)
+        {
+            Graph_Adj[j][i].miles = Graph_Adj[i][j].miles = INF;
+            Graph_Adj[j][i].costs = Graph_Adj[i][j].costs = INF;
+        }
     }
 
-    LevelorderTraversal(bt);
-    //InorderTraversal(bt);
+    // 载入城市间信息到邻接矩阵中
+    for (int i = 0; i < M; i++)
+    {
+        int city1, city2, miles, costs;
+        scanf("%d%d%d%d", &city1, &city2, &miles, &costs);
+        Graph_Adj[city1][city2].miles = Graph_Adj[city2][city1].miles = miles;
+        Graph_Adj[city1][city2].costs = Graph_Adj[city2][city1].costs = costs;
+    }
+
+    // 寻找单源最短路径
+    DIJ(S, N);
+    find_paths(S, D);
+
+
+    printf("%d %d", distance[D], minimum);
 
     return 0;
 }
