@@ -30,7 +30,7 @@ void Dijkstra(int s, int n)
     {
         int u = -1, MIN = INF;
         for (int j = 0; j < n; j++)
-        { // 寻找到能到达的距离最小的点
+        { // 寻找到能到达的距离最小的点，作为下一步的中介点
             if (vis[j] == false && dis[j] < MIN)
             {
                 u = j;
