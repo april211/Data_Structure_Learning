@@ -9,7 +9,6 @@
 #define TRUE 1
 #define DEFAULT -1
 
-using std::priority_queue;
 using std::vector;
 
 int Graph_Adj[max_vnum][max_vnum]; // 图的邻接带权矩阵
@@ -55,7 +54,7 @@ void DIJ(int start, int n) // 起始节点编号 节点总数目
         {
             // 该点尚未确定最短路径长度，且中介点可以直接到达该点
             if ((!final[j]) && (Graph_Adj[mid][j] != INF))
-            {   
+            {
                 // 经过中介点后路径变短，更新最短路径
                 if (distance[mid] + Graph_Adj[mid][j] < distance[j])   //WRONG: Graph_Adj[start][mid]    
                 {
@@ -72,8 +71,48 @@ void DIJ(int start, int n) // 起始节点编号 节点总数目
     }
 }
 
+
+int minimum = INF;
+
+vector<int> temp_path; // 暂存路径
+
+void find_paths(int start, int d)
+{
+    if (start == d)
+    {
+        temp_path.push_back(start);
+        int value = 0;
+        for (int i = 0; i < temp_path.size()-1; i++)
+        {
+            //printf("--> %d <--\n", Graph_Adj[temp_path[i]][temp_path[i+1]].costs);
+            value += Graph_Adj[temp_path[i]][temp_path[i+1]];
+        }
+        //printf("Value : %d\n", value);
+        if (value < minimum)
+        {
+            minimum = value;
+        }
+        temp_path.pop_back();
+        return;
+    }
+    else
+    {
+        temp_path.push_back(d); // 压入末端节点
+        for (int i = 0; i < prevex[d].size(); i++)
+        {
+            find_paths(start, prevex[d][i]);
+        }
+        temp_path.pop_back();
+    }
+}
+
 int main()
 {
+    
+
+
+
+
 
     return 0;
 }
