@@ -13,16 +13,16 @@
 #define STACK_INIT_CAPACITY  100
 #define STACKINCREASEMENT     10
 
-typedef char SElemType;
+typedef char SElemType;         // 栈内存储元素的类型
 typedef int Status;
 
 // 顺序栈结构的定义
 typedef struct SqStack
 {
-    int  stack_capacity;
-    int  stack_size;
-    SElemType *base;
-    SElemType *top;
+    int  stack_capacity;            // 栈的最大容量
+    int  stack_size;                // 栈内现有元素的数量
+    SElemType *base;                // 指向栈底元素的指针
+    SElemType *top;                 // 指向栈顶元素的指针
 }SqStack;
 
 // 构造一个空栈

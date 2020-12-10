@@ -16,5 +16,5 @@ int main()
     c = (*pt)(a, b);            // 通过函数指针调用函数
     printf("%d\n", c);
 
+    return 0;
 }
-

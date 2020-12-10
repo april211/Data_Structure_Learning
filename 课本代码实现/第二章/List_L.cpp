@@ -164,7 +164,7 @@ int ListLength (const LinkList &L)
 int ListLength (const Link &pt)
 {
     if(!pt) return 0;
-    int  len = 1; 
+    int  len = 0;   // 头结点不算入
     Link pp = pt;
     while(pp->next)
     {
