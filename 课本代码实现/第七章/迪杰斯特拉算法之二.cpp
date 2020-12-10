@@ -56,13 +56,13 @@ void DIJ(int start, int n) // 起始节点编号 节点总数目
             if ((!final[j]) && (Graph_Adj[mid][j] != INF))
             {
                 // 经过中介点后路径变短，更新最短路径
-                if (distance[mid] + Graph_Adj[mid][j] < distance[j])   //WRONG: Graph_Adj[start][mid]    
+                if (distance[mid] + Graph_Adj[mid][j] < distance[j]) //WRONG: Graph_Adj[start][mid]
                 {
                     distance[j] = distance[mid] + Graph_Adj[mid][j];
                     prevex[j].clear();
-                    prevex[j].push_back(mid);   // 该中介点是 j号节点的前一个节点
+                    prevex[j].push_back(mid); // 该中介点是 j号节点的前一个节点
                 }
-                else if(distance[mid] + Graph_Adj[mid][j] == distance[j])   // 若相等，保存该节点，不删除旧的
+                else if (distance[mid] + Graph_Adj[mid][j] == distance[j]) // 若相等，保存该节点，不删除旧的
                 {
                     prevex[j].push_back(mid);
                 }
@@ -71,28 +71,28 @@ void DIJ(int start, int n) // 起始节点编号 节点总数目
     }
 }
 
-
-int minimum = INF;
-
-vector<int> temp_path; // 暂存路径
+int minimum = INF;     // 这里是最小优化问题（例如要求路径长度最短）
+int shortest_cnt = 0;  // 记录最短路径条数
+vector<int> temp_path; // 暂存路径（跟随递归动态变化）
+vector<int> best_path; // 最优路径（路程一定最短，可以加入其它条件综合优化）
 
 void find_paths(int start, int d)
 {
-    if (start == d)
+    if (start == d) // 递归到起始节点
     {
-        temp_path.push_back(start);
-        int value = 0;
-        for (int i = 0; i < temp_path.size()-1; i++)
+        ++shortest_cnt;             // 最短路径数加一
+        temp_path.push_back(start); // 将起始节点压入栈
+        int value = 0;              // 求这一条完整路径的总权值（度规不一定非是路径长度）
+        for (int i = 0; i < temp_path.size() - 1; i++)
         {
-            //printf("--> %d <--\n", Graph_Adj[temp_path[i]][temp_path[i+1]].costs);
-            value += Graph_Adj[temp_path[i]][temp_path[i+1]];
+            value += Graph_Adj[temp_path[i]][temp_path[i + 1]]; // 这里可以根据题目需要，换成另外一个度规
         }
-        //printf("Value : %d\n", value);
         if (value < minimum)
         {
             minimum = value;
+            best_path = temp_path; // 保存此最优路径
         }
-        temp_path.pop_back();
+        temp_path.pop_back(); // 必须出栈，保持是一条路径
         return;
     }
     else
@@ -100,19 +100,14 @@ void find_paths(int start, int d)
         temp_path.push_back(d); // 压入末端节点
         for (int i = 0; i < prevex[d].size(); i++)
         {
-            find_paths(start, prevex[d][i]);
+            find_paths(start, prevex[d][i]); // 该点的前一节点可能有多种选择，使得整条路径均为最短
         }
-        temp_path.pop_back();
+        temp_path.pop_back(); // 必须出栈，保持是一条路径
     }
 }
 
 int main()
 {
-    
-
-
-
-
 
     return 0;
 }
