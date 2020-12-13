@@ -20,15 +20,15 @@ typedef struct Edge
 }Edge;
 
 
-int find1(int x, int* par)  // 找到连通分量的根节点
+int find1(int x, int* part)  // 找到连通分量的根节点
 {
-    if (x == par[x])
+    if (x == part[x])
     {
         return x;
     }
-    else // x != par[x]
+    else // x != part[x]
     {
-        return par[x] = find1(par[x], par);
+        return part[x] = find1(part[x], part);
     }  
 }
 
