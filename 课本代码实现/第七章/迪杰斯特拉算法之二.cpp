@@ -100,7 +100,7 @@ void find_paths(int start, int d)
             minimum = value;
             best_path = temp_path; // 保存此最优路径
         }
-        temp_path.pop_back(); // 必须出栈，保持是一条路径
+        temp_path.pop_back(); // 必须出栈，保持是一条路径（返回上一层递归）
         return;
     }
     else
@@ -110,7 +110,8 @@ void find_paths(int start, int d)
         {
             find_paths(start, prevex[d][i]); // 该点的前一节点可能有多种选择，使得整条路径均为最短
         }
-        temp_path.pop_back(); // 必须出栈，保持是一条路径
+        temp_path.pop_back(); // 必须出栈，保持是一条路径（返回上一层递归）
+        return;
     }
 }
 
